@@ -11,7 +11,7 @@ RUN apk add --update --no-cache ca-certificates openssl-dev openssl python3-dev 
     wget -O elastalert.zip "${ELASTALERT_URL}" && \
     unzip elastalert.zip && \
     rm elastalert.zip && \
-    mv e* "${ELASTALERT_HOME}" 
+    mv e* "${ELASTALERT_HOME}"
 
 WORKDIR "${ELASTALERT_HOME}"
 
