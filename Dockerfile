@@ -1,5 +1,5 @@
-FROM python:3.6.8-alpine3.8 as py-ea
-ARG ELASTALERT_VERSION=v0.2.1
+FROM python:3.8.2-alpine3.11 as py-ea
+ARG ELASTALERT_VERSION=v0.2.4
 ENV ELASTALERT_VERSION=${ELASTALERT_VERSION}
 ARG ELASTALERT_URL=https://github.com/Yelp/elastalert/archive/$ELASTALERT_VERSION.zip
 ENV ELASTALERT_URL=${ELASTALERT_URL}
@@ -11,19 +11,21 @@ RUN apk add --update --no-cache ca-certificates openssl-dev openssl python3-dev 
     wget -O elastalert.zip "${ELASTALERT_URL}" && \
     unzip elastalert.zip && \
     rm elastalert.zip && \
-    mv e* "${ELASTALERT_HOME}"
+    mv e* "${ELASTALERT_HOME}" 
 
 WORKDIR "${ELASTALERT_HOME}"
 
-RUN python3 setup.py install
+# version 0.2.1 broken for python 3.7 (jira) #2437 (https://github.com/Yelp/elastalert/issues/2437)
+RUN sed -i 's/jira>=1.0.10,<1.0.15/jira>=2.0.0/g' setup.py && \
+    python3 setup.py install
 
 FROM node:alpine
 LABEL maintainer="John Susek <john@johnsolo.net>"
 ENV TZ Etc/UTC
 
-RUN apk add --update --no-cache curl tzdata python3 ca-certificates openssl-dev openssl python3-dev gcc musl-dev make libffi-dev libmagic
+RUN apk add --update --no-cache curl tzdata python3 ca-certificates openssl-dev openssl python3-dev gcc musl-dev make libffi-dev libmagic wget
 
-COPY --from=py-ea /usr/lib/python3.6/site-packages /usr/lib/python3.6/site-packages
+COPY --from=py-ea /usr/lib/python3.8/site-packages /usr/lib/python3.8/site-packages
 COPY --from=py-ea /opt/elastalert /opt/elastalert
 # COPY --from=py-ea /usr/bin/elastalert* /usr/bin/
 
@@ -47,7 +49,9 @@ EXPOSE 3030
 
 WORKDIR /opt/elastalert
 
-RUN pip3 install -r requirements.txt --user
+# version 0.2.1 broken for python 3.7 (jira) #2437 (https://github.com/Yelp/elastalert/issues/2437)
+RUN sed -i 's/jira>=1.0.10,<1.0.15/jira>=2.0.0/g' requirements.txt && \
+    pip3 install -r requirements.txt --user
 
 WORKDIR /opt/elastalert-server
 
