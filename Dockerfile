@@ -15,9 +15,7 @@ RUN apk add --update --no-cache ca-certificates openssl-dev openssl python3-dev 
 
 WORKDIR "${ELASTALERT_HOME}"
 
-# version 0.2.1 broken for python 3.7 (jira) #2437 (https://github.com/Yelp/elastalert/issues/2437)
-RUN sed -i 's/jira>=1.0.10,<1.0.15/jira>=2.0.0/g' setup.py && \
-    python3 setup.py install
+RUN python3 setup.py install
 
 FROM node:alpine
 LABEL maintainer="John Susek <john@johnsolo.net>"
