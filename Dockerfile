@@ -21,7 +21,7 @@ FROM node:alpine
 LABEL maintainer="John Susek <john@johnsolo.net>"
 ENV TZ Etc/UTC
 
-RUN apk add --update --no-cache curl tzdata python3 ca-certificates openssl-dev openssl python3-dev gcc musl-dev make libffi-dev libmagic wget
+RUN apk add --update --no-cache curl tzdata python3 ca-certificates openssl-dev openssl python3-dev gcc musl-dev make libffi-dev libmagic
 
 COPY --from=py-ea /usr/lib/python3.8/site-packages /usr/lib/python3.8/site-packages
 COPY --from=py-ea /opt/elastalert /opt/elastalert
