@@ -47,8 +47,10 @@ EXPOSE 3030
 
 WORKDIR /opt/elastalert
 
+# Pin elasticsearch to 7.0.0 in requirements.txt #2684 (https://github.com/Yelp/elastalert/pull/2684)
 # version 0.2.1 broken for python 3.7 (jira) #2437 (https://github.com/Yelp/elastalert/issues/2437)
 RUN sed -i 's/jira>=1.0.10,<1.0.15/jira>=2.0.0/g' requirements.txt && \
+    sed -i 's/elasticsearch>=7.0.0/elasticsearch==7.0.0/g' requirements.txt && \
     pip3 install -r requirements.txt --user
 
 WORKDIR /opt/elastalert-server
