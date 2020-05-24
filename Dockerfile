@@ -41,6 +41,8 @@ COPY elastalert_modules/ /opt/elastalert/elastalert_modules
 RUN mkdir -p /opt/elastalert/rules/ /opt/elastalert/server_data/tests/ \
     && chown -R node:node /opt
 
+RUN pip3 install --upgrade pip
+
 USER node
 
 EXPOSE 3030
